@@ -8,11 +8,11 @@ let strengthLabels = [
 
 let usernameExists = false;
 
-let setUsernameStatus = (exists)=>{
-	if(!exists){
+let setUsernameStatus = (exists) => {
+	if (!exists) {
 		usernameExists = false;
 		document.getElementById('usernameStatus').innerHTML = "done";
-	}else{
+	} else {
 		usernameExists = true;
 		document.getElementById('usernameStatus').innerHTML = "error";
 	}
@@ -21,7 +21,7 @@ let setUsernameStatus = (exists)=>{
 let usernameCheck = (username) => {
 	//when the button calls this it passes in an event object
 	//when the validation code calls this we get a value (String)
-	if(typeof username === "object"){
+	if (typeof username === "object") {
 		username = document.getElementById("username").value;
 	}
 
@@ -38,14 +38,14 @@ let usernameCheck = (username) => {
 
 let strengthCheck = (password) => {
 	let msg = document.getElementById('passwordmessage');
-	
+
 	//when the button calls this it passes in an event object
 	//when the validation code calls this we get a value (String)
-	if(typeof password === "object"){
+	if (typeof password === "object") {
 		password = document.getElementById("password").value;
 	}
 
-	if(password === ""){
+	if (password === "") {
 		msg.innerHTML = ' ';
 		return;
 	}
@@ -59,16 +59,16 @@ let strengthCheck = (password) => {
 
 let showError = (error) => {
 	let errorNode = document.getElementById("error");
-	if(error === ""){
+	if (error === "") {
 		//clear error
 		console.log('clearing error');
-		errorNode.style.display="none";
+		errorNode.style.display = "none";
 		errorNode.innerHTML = "<p></p>";
-	}else{
+	} else {
 		//set error
-		console.log('setting error "'+error+'"');
-		errorNode.style.display="block";
-		errorNode.innerHTML = "<p>"+error+"</p>";
+		console.log('setting error "' + error + '"');
+		errorNode.style.display = "block";
+		errorNode.innerHTML = "<p>" + error + "</p>";
 		errorNode.focus();
 	}
 };
@@ -79,16 +79,22 @@ let showError = (error) => {
 //they use a scope closure to hold onto the config settings
 //because the inner function was created in a scope where 'message' exists, for example
 //passing a test returns true, failing a test returns a message
-let minLength = (length, message) => 
-	(value) => value.length > length ? true : message; 
+let minLength = (length, message) =>
+	(value) => value.length > length ? true : message;
 //TODO: maxLength
-let regex = (regex,message) => 
+let maxLength = (length, message) =>
+	(value) => value.length < length ? true : message;
+
+
+let regex = (regex, message) =>
 	(value) => regex.test(value) ? true : message;
 
-let strength = (strength,message) => 
+let strength = (strength, message) =>
 	(value) => strengthCheck(value) >= strength ? true : message;
 //TODO: confirmed (check password against confirm_password)
-let available = (message) => 
+
+
+let available = (message) =>
 	() => !usernameExists ? true : message;
 
 
@@ -102,16 +108,16 @@ let validation = {
 	username: [ //the array of tests to run against usernames
 		minLength(3, "Username too short"),
 		maxLength(10, "Username too long"),
-		regex(/^[0-9a-zA-Z]+$/,"Username can only be letters and numbers"),
+		regex(/^[0-9a-zA-Z]+$/, "Username can only be letters and numbers"),
 		available("Username exists")
 	],
 	password: [
-		minLength(1,"Password too short"),
+		minLength(1, "Password too short"),
 		confirmed("Passwords must match"),
-		strength(2,"Password not strong enough")
+		strength(2, "Password not strong enough")
 	],
 	name: [
-		minLength(1,"Name too short"),
+		minLength(1, "Name too short"),
 	]
 };
 
@@ -120,16 +126,23 @@ let validation = {
 //if any test returns something other than true(boolean) 
 //stop testing and return the error message that the test returned
 let validate = (id) => {
-	//TODO
+	let validators = validation[id];
+	let value = document.getElementById(id).value;
+	for (let i = 0; i < validators.length; i++) {
+		let result = validators[i](value);
+		if (result !== true) {
+			return result;
+		}
+	}
 }
 
-let submitForm = function(e){
-	let ids = ['username','password','name'];
+let submitForm = function (e) {
+	let ids = ['username', 'password', 'name'];
 
-	for(let i = 0;i<ids.length;i++){
+	for (let i = 0; i < ids.length; i++) {
 		let id = ids[i];
 		let result = validate(id);
-		if(result !== true){
+		if (result !== true) {
 			showError(result);
 
 			//stop form from doing it's action
@@ -140,36 +153,36 @@ let submitForm = function(e){
 	return true;
 };
 
-window.addEventListener("load",function(){
+window.addEventListener("load", function () {
 	//listen for all types of changes to password field
 	//so we can update the strength
 	let passwordNode = document.getElementById('password');
-	passwordNode.addEventListener('keydown',strengthCheck);
-	passwordNode.addEventListener('keyup',strengthCheck);
-	passwordNode.addEventListener('cut',strengthCheck);
-	passwordNode.addEventListener('paste',strengthCheck);
-	passwordNode.addEventListener('blur',strengthCheck);
+	passwordNode.addEventListener('keydown', strengthCheck);
+	passwordNode.addEventListener('keyup', strengthCheck);
+	passwordNode.addEventListener('cut', strengthCheck);
+	passwordNode.addEventListener('paste', strengthCheck);
+	passwordNode.addEventListener('blur', strengthCheck);
 
 	//listen for all types of changes to username field
 	//so we can update the icon and exists boolean
 	let usernameNode = document.getElementById('username');
-	usernameNode.addEventListener('keydown',usernameCheck);
-	usernameNode.addEventListener('keyup',usernameCheck);
-	usernameNode.addEventListener('cut',usernameCheck);
-	usernameNode.addEventListener('paste',usernameCheck);
-	usernameNode.addEventListener('blur',usernameCheck);
+	usernameNode.addEventListener('keydown', usernameCheck);
+	usernameNode.addEventListener('keyup', usernameCheck);
+	usernameNode.addEventListener('cut', usernameCheck);
+	usernameNode.addEventListener('paste', usernameCheck);
+	usernameNode.addEventListener('blur', usernameCheck);
 
 	//register submit handler
 	let formNode = document.getElementById('form');
-	formNode.addEventListener('submit',submitForm);
+	formNode.addEventListener('submit', submitForm);
 
 	//grab any error messages returned by php in the # field
 	let errorMessage = window.location.hash;
 	window.location.hash = "";
-	console.log('error message is'+errorMessage);
+	console.log('error message is' + errorMessage);
 
 	//if an error from php exists, show it
-	if(errorMessage && errorMessage.length > 0){
+	if (errorMessage && errorMessage.length > 0) {
 		errorMessage = decodeURIComponent(errorMessage).slice(1);
 		showError(errorMessage);
 	}

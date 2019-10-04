@@ -92,6 +92,7 @@ $app->get('/users/{name}', function (Request $request, Response $response, array
 	
 	//if user doesn't exist, return a 404
 	//TODO
+	return $response->withStatus(404)->getBody()->write("does not exist");
 
 	//user does exist, return a 200
 	return $response->withStatus(200)->getBody()->write("exists");
@@ -126,14 +127,19 @@ $app->post('/users', function (Request $request, Response $response, array $args
 
 //TODO, make a handler for POST /auth
 //listen for POST /auth
-	//create a session, or load an existing session from memory
+$app->post('/auth', function (Request $request, Response $response, array $args){
 
+	//create a session, or load an existing session from memory
+	session_start();
 	//attempt to verify (authenticate) user
 		//username and password will be in $_POST from login.html form
+		$result = authUser(user,pass);
 		//it worked, save username and name into session memory for later use
 		//direct user to index.php
 	//else it didnt work, kill the session.
+	session_destroy();
 	//and send them back to the login page with a message.
+}
 $app->run();
 
 
