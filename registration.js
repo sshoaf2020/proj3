@@ -93,7 +93,10 @@ let strength = (strength, message) =>
 	(value) => strengthCheck(value) >= strength ? true : message;
 //TODO: confirmed (check password against confirm_password)
 
-
+/*   STEVEN: not sure where to go from here
+let confirmed = (confirmed_password, message) =>
+	(value) => 
+*/
 
 let available = (message) =>
 	() => !usernameExists ? true : message;

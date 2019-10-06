@@ -141,16 +141,24 @@ $app->post('/auth', function (Request $request, Response $response, array $args)
 		{	
 			//it worked, save username and name into session memory for later use
 			//direct user to index.php
+			//STEVEN: not sure about this
 			$_SESSION['username'] = $_POST['username'];
+			header("Location: /index.php");
+			exit();
 
 		}
 		else {
 			//else it didnt work, kill the session.
+			//and send them back to the login page with a message.
 			session_destroy();
+
+
 		}
 	
 	
-	//and send them back to the login page with a message.
+	
+
+
 	
 });
 
