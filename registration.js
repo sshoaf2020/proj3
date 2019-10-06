@@ -25,15 +25,25 @@ let usernameCheck = (username) => {
 		username = document.getElementById("username").value;
 	}
 
+
 	//define our response handler
 	let handler = (response) => {
 		//TODO
+
 	}
 
 	//make a GET request to users/<username>,
 	//accept a valid status of 200 or 404, anything else will throw a console error
 	//we are not registering an error handler so errors should bubble up to top of app
 	//TODO
+	axios.get('users/' + username)
+		.then(function (response) {
+			usernameExists = true;
+			document.getElementById('usernameStatus').innerHTML = 'error';
+		}).catch(function (error) {
+			usernameExists = false;
+			document.getElementById('usernameStatus').innerHTML = 'done';
+		});
 };
 
 let strengthCheck = (password) => {
@@ -54,6 +64,10 @@ let strengthCheck = (password) => {
 	//and update the message in the passwordmessage
 	//return the numeric score from zxcvbn
 	//TODO
+	let calculated_strength = zxcvbn(password);
+	msg.innerHTML = strengthLabels[calculated_strength.score];
+	console.log(calculated_strength.score);
+	return calculated_strength.score;
 };
 
 
@@ -91,12 +105,9 @@ let regex = (regex, message) =>
 
 let strength = (strength, message) =>
 	(value) => strengthCheck(value) >= strength ? true : message;
-//TODO: confirmed (check password against confirm_password)
 
-/*   STEVEN: not sure where to go from here
-let confirmed = (confirmed_password, message) =>
-	(value) => 
-*/
+let confirmed = (message) =>
+	(value) => value === document.getElementById('confirm_password').value ? true : message;
 
 let available = (message) =>
 	() => !usernameExists ? true : message;
@@ -139,6 +150,8 @@ let validate = (id) => {
 			return result;
 		}
 	}
+
+	return true;
 }
 
 let submitForm = function (e) {

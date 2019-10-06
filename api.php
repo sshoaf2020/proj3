@@ -135,16 +135,12 @@ $app->post('/auth', function (Request $request, Response $response, array $args)
 	
  	//attempt to verify (authenticate) user
 		//username and password will be in $_POST from login.html form
-		$result = authUser($_POST['username'],$_POST['password']);
+	
 		
-		if ($result)
-		{	
-			//it worked, save username and name into session memory for later use
-			//direct user to index.php
-			//STEVEN: not sure about this
+		if(authUser($_POST['username'], $_POST['password']) === true){
 			$_SESSION['username'] = $_POST['username'];
-			header("Location: /index.php");
-			exit();
+			$_SESSION['name'] = $_POST['name'];
+			return $response->withRedirect('index.php', 302);
 
 		}
 		else {
@@ -152,9 +148,7 @@ $app->post('/auth', function (Request $request, Response $response, array $args)
 			//and send them back to the login page with a message.
 			//STEVEN: I think this is right. 
 			session_destroy();
-			header("Location: /login.html?erro=usernotregisterd");
-
-
+			return $response->withRedirect('login.html#'.$error, 302); 
 		}
 	
 	
