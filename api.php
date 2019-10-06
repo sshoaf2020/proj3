@@ -94,6 +94,7 @@ $app->post('/users', function (Request $request, Response $response, array $args
 		'password' => $_POST['password'],
 		'name' => $_POST['name']
 	);
+	
 	$result = saveUser($user);
 
 	//the form that posted to this endpoint is waiting for a response
@@ -120,13 +121,13 @@ $app->post('/auth', function (Request $request, Response $response, array $args)
 		//it worked, save username and name into session memory for later use
 		//direct user to index.php
 		$_SESSION['username'] = $_POST['username'];
-		$_SESSION['name'] = $_POST['name'];
+		$_SESSION['name']= $_POST['name'];
 		return $response->withRedirect('index.php', 302);
 	} else {
 		//else it didnt work, kill the session.
 		//and send them back to the login page with a message.
 		session_destroy();
-		$error = "Login was unsuccessful.";
+		$error = "Failed to login";
 		return $response->withRedirect('login.html#'.$error, 302); 
 	} 
 });

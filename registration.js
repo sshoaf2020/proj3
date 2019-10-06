@@ -25,13 +25,6 @@ let usernameCheck = (username) => {
 		username = document.getElementById("username").value;
 	}
 
-
-	//define our response handler
-	let handler = (response) => {
-		//TODO
-
-	}
-
 	//make a GET request to users/<username>,
 	//accept a valid status of 200 or 404, anything else will throw a console error
 	//we are not registering an error handler so errors should bubble up to top of app
