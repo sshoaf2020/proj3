@@ -142,15 +142,15 @@ let validation = {
 //stop testing and return the error message that the test returned
 //STEVEN: should be right
 let validate = (id) => {
-	let validators = validation[id];
-	let value = document.getElementById(id).value;
-	for (let i = 0; i < validators.length; i++) {
-		let result = validators[i](value);
-		if (result !== true) {
+	let form = document.getElementById(id);
+	for (let i = 0; i < validation[id].length; i++) {
+		let result = validation[id][i](form.value);
+		if (result === true) {
+			//do nothing
+		} else {
 			return result;
 		}
 	}
-
 	return true;
 }
 
