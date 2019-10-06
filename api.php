@@ -150,7 +150,9 @@ $app->post('/auth', function (Request $request, Response $response, array $args)
 		else {
 			//else it didnt work, kill the session.
 			//and send them back to the login page with a message.
+			//STEVEN: I think this is right. 
 			session_destroy();
+			header("Location: /login.html?erro=usernotregisterd");
 
 
 		}
