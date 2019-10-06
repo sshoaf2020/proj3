@@ -25,9 +25,17 @@ let usernameCheck = (username) => {
 		username = document.getElementById("username").value;
 	}
 
+
+	//define our response handler
+	let handler = (response) => {
+		//TODO
+
+	}
+
 	//make a GET request to users/<username>,
 	//accept a valid status of 200 or 404, anything else will throw a console error
 	//we are not registering an error handler so errors should bubble up to top of app
+	//TODO
 	axios.get('users/' + username)
 		.then(function (response) {
 			usernameExists = true;
@@ -36,7 +44,6 @@ let usernameCheck = (username) => {
 			usernameExists = false;
 			document.getElementById('usernameStatus').innerHTML = 'done';
 		});
-
 };
 
 let strengthCheck = (password) => {
@@ -56,6 +63,7 @@ let strengthCheck = (password) => {
 	//Calculate the strength of the password.
 	//and update the message in the passwordmessage
 	//return the numeric score from zxcvbn
+	//TODO
 	let calculated_strength = zxcvbn(password);
 	msg.innerHTML = strengthLabels[calculated_strength.score];
 	console.log(calculated_strength.score);
@@ -87,15 +95,20 @@ let showError = (error) => {
 //passing a test returns true, failing a test returns a message
 let minLength = (length, message) =>
 	(value) => value.length > length ? true : message;
+//TODO: maxLength   STEVEN:(NOT SURE IF THIS WAS DONE RIGHT)
 let maxLength = (length, message) =>
 	(value) => value.length < length ? true : message;
+
+
 let regex = (regex, message) =>
 	(value) => regex.test(value) ? true : message;
 
 let strength = (strength, message) =>
 	(value) => strengthCheck(value) >= strength ? true : message;
+
 let confirmed = (message) =>
 	(value) => value === document.getElementById('confirm_password').value ? true : message;
+
 let available = (message) =>
 	() => !usernameExists ? true : message;
 
@@ -127,6 +140,7 @@ let validation = {
 //against the value contained in the element id
 //if any test returns something other than true(boolean) 
 //stop testing and return the error message that the test returned
+//STEVEN: should be right
 let validate = (id) => {
 	let form = document.getElementById(id);
 	for (let i = 0; i < validation[id].length; i++) {
