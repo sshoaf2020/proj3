@@ -1,10 +1,13 @@
 <?php
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
+
 require 'vendor/autoload.php';
+
 function getDB(){
 	//file path to json file
 	$dbpath = 'private/database.json';
+
 	//load it
 	$db = file_get_contents($dbpath);
 	//if blank, use empty array, else json decode into array
@@ -28,10 +31,13 @@ function getUser($username){
 	//	sudo tail -f /var/log/apache2/error.log 
 	//you'll need to use ctrl+c to exit, it'll stay up forever
 	//error_log("Get user $username from ".json_encode($db));
+
+
 	//check if user exists
 	if(array_key_exists($username, $db)){
 		return $db[$username];
 	}
+
 	return false;
 }
 function saveUser($user){
@@ -71,7 +77,8 @@ $app->get('/users/{name}', function (Request $request, Response $response, array
 	$name = $args['name'];
 	
 	//if user doesn't exist, return a 404
-	if(getUser($name) == false) {
+	if(getUser($name) == false)
+	{
 		return $response->withStatus(404);
 	}
 	//user does exist, return a 200
@@ -88,10 +95,12 @@ $app->post('/users', function (Request $request, Response $response, array $args
 		'name' => $_POST['name']
 	);
 	$result = saveUser($user);
+
 	//the form that posted to this endpoint is waiting for a response
 	//unlike when using the axios library, this is a full page load / redirection
 	//a 302 would not work inside /users/{name}, because its just JS doing the request, not the
 	//browser window
+	
 	//if it worked and saved...
 	if($result === true){
 		return $response->withRedirect('login.html', 302);
@@ -99,27 +108,30 @@ $app->post('/users', function (Request $request, Response $response, array $args
 	//else user the # to pass an error back to the browser and reload the same page they came from
 	return $response->withRedirect('registration.html#'.$result, 302);
 });
-//handler for POST /auth
+
 //listen for POST /auth
+$app->post('/auth', function (Request $request, Response $response, array $args) {
 	//create a session, or load an existing session from memory
+	session_start();
+		
 	//attempt to verify (authenticate) user
+	if(authUser($_POST['username'], $_POST['password']) === true){
 		//username and password will be in $_POST from login.html form
 		//it worked, save username and name into session memory for later use
 		//direct user to index.php
-	//else it didnt work, kill the session.
-	//and send them back to the login page with a message.
-$app->post('/auth', function (Request $request, Response $response, array $args) {
-	
-	session_start();
-	if(authUser($_POST['username'], $_POST['password']) === true){
 		$_SESSION['username'] = $_POST['username'];
 		$_SESSION['name'] = $_POST['name'];
 		return $response->withRedirect('index.php', 302);
 	} else {
+		//else it didnt work, kill the session.
+		//and send them back to the login page with a message.
 		session_destroy();
 		$error = "Login was unsuccessful.";
 		return $response->withRedirect('login.html#'.$error, 302); 
 	} 
 });
+
+
 $app->run();
+
 ?>
