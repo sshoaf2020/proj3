@@ -131,15 +131,29 @@ $app->post('/auth', function (Request $request, Response $response, array $args)
 
 	//create a session, or load an existing session from memory
 	session_start();
-	//attempt to verify (authenticate) user
+
+	
+ 	//attempt to verify (authenticate) user
 		//username and password will be in $_POST from login.html form
-		$result = authUser(user,pass);
-		//it worked, save username and name into session memory for later use
-		//direct user to index.php
-	//else it didnt work, kill the session.
-	session_destroy();
+		$result = authUser($_POST['username'],$_POST['password']);
+		
+		if ($result)
+		{	
+			//it worked, save username and name into session memory for later use
+			//direct user to index.php
+			$_SESSION['username'] = $_POST['username'];
+
+		}
+		else {
+			//else it didnt work, kill the session.
+			session_destroy();
+		}
+	
+	
 	//and send them back to the login page with a message.
-}
+	
+});
+
 $app->run();
 
 
