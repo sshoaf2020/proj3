@@ -91,7 +91,7 @@ $app->get('/users/{name}', function (Request $request, Response $response, array
 	$name = $args['name'];
 	
 	//if user doesn't exist, return a 404
-	//TODO
+	//TODO  STEVEN:(done, not sure if correct ?)
 	return $response->withStatus(404)->getBody()->write("does not exist");
 
 	//user does exist, return a 200
@@ -125,7 +125,7 @@ $app->post('/users', function (Request $request, Response $response, array $args
 	return $response->withRedirect('registration.html#'.$result, 302);
 });
 
-//TODO, make a handler for POST /auth
+//TODO, make a handler for POST /auth   STEVEN:(need to do last part? not sure about any of it)
 //listen for POST /auth
 $app->post('/auth', function (Request $request, Response $response, array $args){
 

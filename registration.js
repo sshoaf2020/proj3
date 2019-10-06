@@ -81,7 +81,7 @@ let showError = (error) => {
 //passing a test returns true, failing a test returns a message
 let minLength = (length, message) =>
 	(value) => value.length > length ? true : message;
-//TODO: maxLength
+//TODO: maxLength   STEVEN:(NOT SURE IF THIS WAS DONE RIGHT)
 let maxLength = (length, message) =>
 	(value) => value.length < length ? true : message;
 
@@ -92,6 +92,7 @@ let regex = (regex, message) =>
 let strength = (strength, message) =>
 	(value) => strengthCheck(value) >= strength ? true : message;
 //TODO: confirmed (check password against confirm_password)
+
 
 
 let available = (message) =>
@@ -125,6 +126,7 @@ let validation = {
 //against the value contained in the element id
 //if any test returns something other than true(boolean) 
 //stop testing and return the error message that the test returned
+//STEVEN: should be right
 let validate = (id) => {
 	let validators = validation[id];
 	let value = document.getElementById(id).value;
